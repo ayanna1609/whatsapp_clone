@@ -1,24 +1,24 @@
-# 💬 WhatsApp Clone
+# WhatsApp Clone
 
 A full-stack real-time chat application inspired by WhatsApp, built using the MERN stack and Socket.io.
 
 ---
 
-## 🚀 Features
+   Features
 
-- 🔐 User Authentication (Register/Login)
-- 💬 Real-time Messaging (Socket.io)
-- 🧾 Chat History & Message Persistence (MongoDB)
-- ✅ Protected Routes for Authenticated Users
-- ✨ Clean UI with React + Plain CSS
-- 📱 Responsive Design (Mobile-friendly)
-- 🧑‍🤝‍🧑 User List Sidebar with Avatars
-- 📥 Message Input with Send/Clear
-- 🕒 Time/Date Display in Messages
+-  User Authentication (Register/Login)
+-  Real-time Messaging (Socket.io)
+-  Chat History & Message Persistence (MongoDB)
+-  Protected Routes for Authenticated Users
+-  Clean UI with React + Plain CSS
+-  Responsive Design (Mobile-friendly)
+-  User List Sidebar with Avatars
+-  Message Input with Send/Clear
+-  Time/Date Display in Messages
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend:
 - React
