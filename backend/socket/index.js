@@ -19,6 +19,19 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+// ERROR HANDLING MIDDLEWARE
+const errorMiddleware = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal Server Error";
+
+  console.error(`Status: ${err.statusCode}, Error: ${err.message}`);
+
+  res.status(err.statusCode).json({
+    success: false,
+    message: err.message,
+  });
+};
+
 // ROUTES
 app.use("/api/user", router);
 
@@ -63,5 +76,7 @@ io.on("connection", async (socket) => {
     console.log("User disconnected:", user._id);
   });
 });
+
+app.use(errorMiddleware);
 
 module.exports = { server };
