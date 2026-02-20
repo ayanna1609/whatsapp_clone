@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { getSocket } from "../socket";
 import "./ChatWindow.css";
-
-const socket = io("http://localhost:5000", {
-  auth: {
-    token: localStorage.getItem("token"), // Make sure token is stored here
-  },
-  withCredentials: true,
-});
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState([]);
@@ -17,8 +10,25 @@ export default function ChatWindow() {
   const receiverId = "6870bd45196cc361a424d09b"; // Replace with actual receiver's user _id
   const msgByUserId = senderId; // Who is sending the message
 
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.emit("messagePage", receiverId); // Load existing messages
+
+    socket.on("message", (allMessages) => {
+      setMessages(allMessages);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, [receiverId]);
+
   const handleSend = () => {
     if (!input.trim()) return;
+    const socket = getSocket();
+    if (!socket) return;
 
     const messageData = {
       sender: senderId,
@@ -32,18 +42,6 @@ export default function ChatWindow() {
     socket.emit("newMessage", messageData);
     setInput("");
   };
-
-  useEffect(() => {
-    socket.emit("messagePage", receiverId); // Load existing messages
-
-    socket.on("message", (allMessages) => {
-      setMessages(allMessages);
-    });
-
-    return () => {
-      socket.off("message");
-    };
-  }, [receiverId]);
 
   return (
     <div className="chat-window">
