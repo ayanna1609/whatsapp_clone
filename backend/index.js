@@ -2,7 +2,9 @@ require("dotenv").config();
 const connectDB = require("./config/connection");
 const { server } = require("./socket/index"); // only server
 
+console.log("Booting server...");
 connectDB();
+console.log("connectDB() called.");
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, "0.0.0.0", () =>
