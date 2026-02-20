@@ -3,7 +3,13 @@ const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 
 exports.isAuth = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.cookies;
+  // Try header first
+  let token = req.headers.authorization?.split(" ")[1]; // 'Bearer <token>'
+  console.log("Token from header:", token);
+
+  // Fallback to cookie
+  if (!token) token = req.cookies?.token;
+  console.log("Token from cookies:", token);
 
   if (!token) {
     return res.status(401).json({
