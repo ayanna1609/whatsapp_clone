@@ -11,10 +11,8 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    alert("Login button clicked! API_URL is: " + API_URL);
 
     try {
-      console.log("Starting fetch to:", `${API_URL}/api/user/login`);
       const res = await fetch(`${API_URL}/api/user/login`, {
         method: "POST",
         headers: {

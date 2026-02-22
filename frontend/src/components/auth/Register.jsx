@@ -11,11 +11,11 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    alert("Register button clicked! API_URL is: " + API_URL);
     try {
       const res = await fetch(`${API_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ name, email, password }),
       });
 
