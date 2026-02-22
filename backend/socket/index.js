@@ -15,7 +15,25 @@ const app = express();
 const server = http.createServer(app);
 
 // MIDDLEWARE
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL?.endsWith("/") ? process.env.FRONTEND_URL.slice(0, -1) : process.env.FRONTEND_URL + "/",
+].filter(Boolean);
+
+console.log("Allowed Origins:", allowedOrigins);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    console.log("Incoming Origin:", origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("Origin BLOCKED by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -40,7 +58,7 @@ app.get("/", (req, res) => res.send("API is running"));
 
 // SOCKET.IO
 const io = new Server(server, {
-  cors: { origin: process.env.FRONTEND_URL, credentials: true },
+  cors: { origin: allowedOrigins, credentials: true },
 });
 
 const onlineUsers = new Set();
