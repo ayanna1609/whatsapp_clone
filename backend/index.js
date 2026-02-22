@@ -18,6 +18,11 @@ process.on("unhandledRejection", (err) => {
 });
 
 const PORT = process.env.PORT || 5000;
+console.log("Environment variables loaded:");
+console.log("- PORT:", PORT);
+console.log("- FRONTEND_URL:", process.env.FRONTEND_URL);
+console.log("- DATABASE_URL:", process.env.DATABASE_URL ? "MAPPED" : "MISSING");
+
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT} (0.0.0.0)`);
 });
