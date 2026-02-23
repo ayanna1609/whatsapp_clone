@@ -18,12 +18,11 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
-      console.log("Login response:", data); // ✅ Debug output
+      console.log("Login response:", data);
 
       if (!res.ok) {
         throw new Error(data.message || "Login failed");
@@ -34,6 +33,7 @@ export default function Login() {
 
       navigate("/");
     } catch (err) {
+      console.error("Login error:", err);
       alert("Something went wrong: " + err.message);
     }
   };

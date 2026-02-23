@@ -15,7 +15,6 @@ const Register = () => {
       const res = await fetch(`${API_URL}/api/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ name, email, password }),
       });
 
@@ -27,6 +26,7 @@ const Register = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/");
     } catch (err) {
+      console.error("Register error:", err);
       alert("Something went wrong: " + err.message);
     }
   };
