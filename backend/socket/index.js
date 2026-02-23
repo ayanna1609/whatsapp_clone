@@ -14,11 +14,16 @@ const getConversation = require("../utils/getConversation");
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+const allowedOrigin = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
 // MIDDLEWARE
 app.use(cors({
-  origin: allowedOrigin,
+  origin: allowedOrigin.length > 0 ? allowedOrigin : true,
   credentials: true
 }));
 app.use(express.json());
@@ -46,7 +51,7 @@ app.get("/", (req, res) => res.send("API is running"));
 // SOCKET.IO
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
+    origin: allowedOrigin.length > 0 ? allowedOrigin : true,
     credentials: true
   },
 });
