@@ -22,8 +22,10 @@ const Register = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
-      alert("Registration successful! Please login.");
-      navigate("/login");
+      // Auto-login after successful registration
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/");
     } catch (err) {
       alert("Something went wrong: " + err.message);
     }
