@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
-const sendToken = require("../utils/sendToken"); 
+const sendToken = require("../utils/sendToken");
 
 // =================== REGISTER USER ===================
 exports.registerUser = catchAsyncErrors(async (req, res) => {
@@ -64,8 +64,8 @@ exports.logout = catchAsyncErrors(async (req, res) => {
   const cookieOptions = {
     expires: new Date(Date.now()),
     httpOnly: true,
-    secure: false,    // must be false for http://localhost
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   return res.cookie("token", "", cookieOptions).status(200).json({

@@ -14,9 +14,11 @@ const getConversation = require("../utils/getConversation");
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+
 // MIDDLEWARE
 app.use(cors({
-  origin: true,
+  origin: allowedOrigin,
   credentials: true
 }));
 app.use(express.json());
@@ -43,7 +45,10 @@ app.get("/", (req, res) => res.send("API is running"));
 
 // SOCKET.IO
 const io = new Server(server, {
-  cors: { origin: true, credentials: true },
+  cors: {
+    origin: allowedOrigin,
+    credentials: true
+  },
 });
 
 const onlineUsers = new Set();
