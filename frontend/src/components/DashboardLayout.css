@@ -1,5 +1,26 @@
 .dashboard {
   display: flex;
   height: 100vh;
-  background-color: #e5ddd5;
+  width: 100vw;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-shadow: 0 6px 18px rgba(11, 20, 26, 0.05);
+  background: #fff;
+}
+
+.empty-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-bottom: 6px solid #00a884;
+  color: var(--wa-text-secondary);
+}
+
+.empty-chat h2 {
+  margin-top: 20px;
+  font-weight: 300;
+  color: var(--wa-text-primary);
 }

@@ -1,42 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getSocket } from "../socket";
 import "./ChatWindow.css";
 
-export default function ChatWindow() {
+export default function ChatWindow({ selectedUser, currentUser }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-
-  const senderId = "6870b2d3e1ffc46fee213b85"; // Your ID
-  const receiverId = "6870bd45196cc361a424d09b"; // Replace with actual receiver's user _id
-  const msgByUserId = senderId; // Who is sending the message
+  const [headerUser, setHeaderUser] = useState(selectedUser);
+  const scrollRef = useRef(null);
+  const socket = getSocket();
 
   useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
+    if (!socket || !selectedUser) return;
 
-    socket.emit("messagePage", receiverId); // Load existing messages
+    socket.emit("messagePage", selectedUser._id);
+
+    socket.on("message-user", (data) => {
+      setHeaderUser(data);
+    });
 
     socket.on("message", (allMessages) => {
       setMessages(allMessages);
     });
 
     return () => {
+      socket.off("message-user");
       socket.off("message");
     };
-  }, [receiverId]);
+  }, [socket, selectedUser]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    const socket = getSocket();
-    if (!socket) return;
+    if (!input.trim() || !socket) return;
 
     const messageData = {
-      sender: senderId,
-      receiver: receiverId,
+      sender: currentUser?._id,
+      receiver: selectedUser?._id,
       text: input,
-      msgByUserId,
-      imageUrl: "",   // Optional
-      videoUrl: "",   // Optional
+      msgByUserId: currentUser?._id,
+      imageUrl: "",
+      videoUrl: "",
     };
 
     socket.emit("newMessage", messageData);
@@ -45,11 +52,21 @@ export default function ChatWindow() {
 
   return (
     <div className="chat-window">
-      <div className="messages">
+      <div className="chat-header">
+        <div className="avatar">{headerUser?.name?.charAt(0)}</div>
+        <div className="header-info">
+          <h3>{headerUser?.name}</h3>
+          <p className={headerUser?.online ? "online" : "offline"}>
+            {headerUser?.online ? "Online" : "Offline"}
+          </p>
+        </div>
+      </div>
+
+      <div className="messages" ref={scrollRef}>
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`message ${msg.msgByUser === senderId ? "sent" : "received"}`}
+            className={`message ${msg.msgByUser === currentUser?._id ? "sent" : "received"}`}
           >
             <p className="text">{msg.text}</p>
             <span className="time">
@@ -57,7 +74,11 @@ export default function ChatWindow() {
             </span>
           </div>
         ))}
+        {messages.length === 0 && (
+          <div className="no-messages">Say hello to {headerUser?.name}!</div>
+        )}
       </div>
+
       <div className="input-area">
         <input
           type="text"
@@ -66,7 +87,7 @@ export default function ChatWindow() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend} disabled={!input.trim()}>Send</button>
       </div>
     </div>
   );

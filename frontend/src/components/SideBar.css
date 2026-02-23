@@ -1,33 +1,109 @@
 .sidebar {
-  width: 250px;
-  background-color: #ffffff;
-  border-right: 1px solid #ccc;
-  height: 100vh;
-  padding: 20px;
+  width: 400px;
+  min-width: 300px;
+  background-color: var(--wa-sidebar-bg);
+  border-right: 1px solid var(--wa-border);
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-  color: #075e54;
+.sidebar-header {
+  height: 60px;
+  padding: 10px 16px;
+  background-color: var(--wa-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.sidebar li {
-  padding: 10px 15px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  background-color: #f6f6f6;
-}
-
-.sidebar li.active,
-.sidebar li:hover {
-  background-color: #e1f3e7;
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--wa-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
-  color: #075e54;
+  font-size: 18px;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--wa-text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.logout-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #ea0038;
+}
+
+.search-box {
+  padding: 8px 12px;
+  background-color: #fff;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--wa-bg);
+  outline: none;
+  font-size: 14px;
+}
+
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.conv-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f5f6f6;
+}
+
+.conv-item:hover {
+  background-color: var(--wa-active);
+}
+
+.conv-item.active {
+  background-color: var(--wa-active);
+}
+
+.details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: 500;
+  color: var(--wa-text-primary);
+}
+
+.details p {
+  font-size: 13px;
+  color: var(--wa-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
 }

@@ -21,11 +21,16 @@ const getConversation = async (userId) => {
         }
       }, 0);
 
+      const isSender = conv?.sender?._id?.toString() === userId;
+      const otherUser = isSender ? conv?.receiver : conv?.sender;
+
       return {
         _id: conv?._id,
         sender: conv?.sender,
         receiver: conv?.receiver,
         unseenMsg: countUnseenMsg,
+        userDetails: otherUser,
+        lastMsg: conv?.messages[conv?.messages?.length - 1],
       };
     });
 

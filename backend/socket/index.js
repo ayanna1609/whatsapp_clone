@@ -71,7 +71,89 @@ io.on("connection", async (socket) => {
   onlineUsers.add(user._id.toString());
   io.emit("onlineUser", Array.from(onlineUsers));
 
-  // ... add your socket.on handlers (messagePage, newMessage, etc.) here ...
+  socket.on("messagePage", async (userId) => {
+    try {
+      const userDetails = await UserModel.findById(userId).select("-password");
+
+      const payload = {
+        _id: userDetails?._id,
+        name: userDetails?.name,
+        email: userDetails?.email,
+        profilePic: userDetails?.profilePic,
+        online: onlineUsers.has(userId),
+      };
+
+      socket.emit("message-user", payload);
+
+      const conversation = await ConversationModel.findOne({
+        $or: [
+          { sender: user._id, receiver: userId },
+          { sender: userId, receiver: user._id },
+        ],
+      }).populate("messages");
+
+      socket.emit("message", conversation?.messages || []);
+    } catch (error) {
+      console.error("Error in messagePage:", error);
+    }
+  });
+
+  socket.on("newMessage", async (data) => {
+    try {
+      const { sender, receiver, text, imageUrl, videoUrl, msgByUserId } = data;
+
+      let conversation = await ConversationModel.findOne({
+        $or: [
+          { sender: sender, receiver: receiver },
+          { sender: receiver, receiver: sender },
+        ],
+      });
+
+      if (!conversation) {
+        conversation = await ConversationModel.create({
+          sender: sender,
+          receiver: receiver,
+        });
+      }
+
+      const message = await messageModel.create({
+        text,
+        imageUrl,
+        videoUrl,
+        msgByUser: msgByUserId || sender,
+      });
+
+      await ConversationModel.updateOne(
+        { _id: conversation._id },
+        {
+          $push: { messages: message._id },
+        }
+      );
+
+      const updatedConversation = await ConversationModel.findById(conversation._id).populate("messages");
+
+      io.to(sender).to(receiver).emit("message", updatedConversation.messages);
+
+      // Update conversations list for both users
+      const senderConversations = await getConversation(sender);
+      const receiverConversations = await getConversation(receiver);
+
+      io.to(sender).emit("conversation", senderConversations);
+      io.to(receiver).emit("conversation", receiverConversations);
+
+    } catch (error) {
+      console.error("Error in newMessage:", error);
+    }
+  });
+
+  socket.on("sidebar", async (userId) => {
+    try {
+      const conversation = await getConversation(userId);
+      socket.emit("conversation", conversation);
+    } catch (error) {
+      console.error("Error in sidebar socket handler:", error);
+    }
+  });
 
   socket.on("disconnect", () => {
     onlineUsers.delete(user._id.toString());
