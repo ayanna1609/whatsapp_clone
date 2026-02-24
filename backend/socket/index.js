@@ -18,6 +18,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
+  "https://whatsapp-clone-seven-henna.vercel.app",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -27,6 +28,8 @@ console.log("Allowed Origins:", allowedOrigins);
 const checkOrigin = (origin, callback) => {
   // allow requests with no origin (like mobile apps, curl, or server-to-server)
   if (!origin) return callback(null, true);
+  // allow any .vercel.app subdomain (preview deployments etc.)
+  if (origin.endsWith(".vercel.app")) return callback(null, true);
   if (allowedOrigins.includes(origin)) {
     callback(null, true);
   } else {
