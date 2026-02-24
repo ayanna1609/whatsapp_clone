@@ -1,6 +1,10 @@
 // src/utils/api.js
 
-export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+// In production (Vercel), REACT_APP_API_URL must be set to the backend URL (e.g. https://your-app.onrender.com)
+// In development, it falls back to localhost:5000
+export const API_URL =
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production" ? "" : "http://localhost:5000");
 console.log("Using API_URL:", API_URL);
 
 export const loginUser = async (email, password) => {
