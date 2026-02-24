@@ -18,12 +18,23 @@ const allowedOrigin = [
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
-  process.env.FRONTEND_URL
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
+
+console.log("Allowed Origins:", allowedOrigin);
 
 // MIDDLEWARE
 app.use(cors({
-  origin: allowedOrigin.length > 0 ? allowedOrigin : true,
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigin.indexOf(origin) !== -1 || allowedOrigin.includes(true)) {
+      callback(null, true);
+    } else {
+      console.warn(`Origin ${origin} not allowed by CORS`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

@@ -1,11 +1,10 @@
-// src/socket.js
-import { io } from "socket.io-client";
+import { API_URL } from "./utils/api";
 
 let socket;
 
 export const connectSocket = (token) => {
   if (!socket) {
-    socket = io(process.env.REACT_APP_API_URL || "http://localhost:5000", {
+    socket = io(API_URL, {
       auth: {
         token: token, // ✅ pass token
       },

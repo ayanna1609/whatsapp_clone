@@ -1,6 +1,7 @@
 // src/utils/api.js
 
-export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; // Backend base URL
+export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+console.log("Using API_URL:", API_URL);
 
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_URL}/api/user/login`, {
